@@ -1,12 +1,12 @@
 export type StatusType = 'success' | 'failure' | 'cancelled' | 'custom'
 
 export const getStatusType = (value: string): StatusType => {
-  switch (value) {
-    case 'Success':
+  switch (value.toLowerCase()) {
+    case 'success':
       return 'success'
-    case 'Failure':
+    case 'failure':
       return 'failure'
-    case 'Cancelled':
+    case 'cancelled':
       return 'cancelled'
     default:
       return 'custom'

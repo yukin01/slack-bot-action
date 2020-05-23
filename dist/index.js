@@ -30071,12 +30071,12 @@ function descending(a, b)
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getStatusType = (value) => {
-    switch (value) {
-        case 'Success':
+    switch (value.toLowerCase()) {
+        case 'success':
             return 'success';
-        case 'Failure':
+        case 'failure':
             return 'failure';
-        case 'Cancelled':
+        case 'cancelled':
             return 'cancelled';
         default:
             return 'custom';
