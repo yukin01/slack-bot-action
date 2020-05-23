@@ -1,4 +1,4 @@
-name: Test
+name: Notification Test
 on:
   pull_request:
   push:

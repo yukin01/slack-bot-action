@@ -40,13 +40,18 @@ export const messageFactory: MessageFactory = async ({ status: rawStatus, github
         short: true
       },
       {
-        title: 'Commit',
-        value: `<${githubRepoURL}/commit/${sha}|${sha.substring(0, 7)}>`,
+        title: 'Workflow',
+        value: `<https://github.com/${owner}/${repo}/commit/${sha}/checks|${workflow}>`,
         short: true
       },
       {
-        title: 'Workflow',
-        value: `<https://github.com/${owner}/${repo}/commit/${sha}/checks|${workflow}>`,
+        title: 'Status',
+        value: status.value,
+        short: true
+      },
+      {
+        title: 'Commit',
+        value: `<${githubRepoURL}/commit/${sha}|${sha.substring(0, 7)}>`,
         short: true
       }
     ],
