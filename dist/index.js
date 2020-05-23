@@ -30070,7 +30070,7 @@ exports.getStatusType = (value) => {
         case 'Success':
             return 'success';
         case 'Failure':
-            return 'cancelled';
+            return 'failure';
         case 'Cancelled':
             return 'cancelled';
         default:
