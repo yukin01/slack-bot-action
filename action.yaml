@@ -1,4 +1,4 @@
-name: Slack Web API Action
+name: Slack Bot (Web API) Action
 description: An action to notify Slack using the chat.postMessage API
 author: yukin01
 
