@@ -5,7 +5,7 @@ export const getStatusType = (value: string): StatusType => {
     case 'Success':
       return 'success'
     case 'Failure':
-      return 'cancelled'
+      return 'failure'
     case 'Cancelled':
       return 'cancelled'
     default:
