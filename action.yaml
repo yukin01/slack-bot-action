@@ -1,19 +1,21 @@
-name: Slack Bot Action
+name: Slack Web API Action
 description: An action to notify Slack using the chat.postMessage API
 author: yukin01
 inputs:
   status:
-    description: Job status
+    description: Job results. In most use cases, you should specify `job.status`.
     required: true
   github_token:
-    description: GitHub Token
+    description: Personal access token (PAT) used to fetch the repository.
     required: false
     default: ${{ github.token }}
   oauth_token:
-    description: Slack OAuth Token
+    description: |
+      Slack's access token. If you're using modern Slack Apps,
+      specify the **Bot User OAuth Access Token** which begin with `xoxb-`.
     required: true
   channel:
-    description: Slack channel
+    description: The channel to be notified of results.
     required: true
   text:
     description: todo
