@@ -1,9 +1,10 @@
-name: Build and test
+name: Test
 on:
   pull_request:
   push:
     branches:
       - master
+      - develop
       - releases/*
 
 jobs:
@@ -12,12 +13,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          yarn --frozen-lockfile
+          yarn install
           yarn all
-  test:
+  e2e:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ./
+      - name: The job has succeeded
+        uses: ./
         with:
-          numbers: 1,2,3
+          status: Success
+          oauth_token: ${{ secrets.SLACK_OAUTH_TOKEN }}
+          channel: ${{ secrets.SLACK_CHANNEL }}
+      - name: The job has failed
+        uses: ./
+        with:
+          status: Failure
+          oauth_token: ${{ secrets.SLACK_OAUTH_TOKEN }}
+          channel: ${{ secrets.SLACK_CHANNEL }}
+      - name: The job has been cancelled
+        uses: ./
+        with:
+          status: Cancelled
+          oauth_token: ${{ secrets.SLACK_OAUTH_TOKEN }}
+          channel: ${{ secrets.SLACK_CHANNEL }}

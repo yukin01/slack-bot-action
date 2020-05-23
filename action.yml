@@ -1,0 +1,36 @@
+name: Slack Bot Action
+description: An action to notify Slack using the chat.postMessage API
+author: yukin01
+inputs:
+  status:
+    description: Job status
+    required: true
+  github_token:
+    description: GitHub Token
+    required: false
+    default: ${{ github.token }}
+  oauth_token:
+    description: Slack OAuth Token
+    required: true
+  channel:
+    description: Slack channel
+    required: true
+  text:
+    description: todo
+    required: false
+    default: ''
+  username:
+    description: todo
+    required: false
+    default: ''
+  icon_emoji:
+    description: todo
+    required: false
+    default: ''
+  icon_url:
+    description: todo
+    required: false
+    default: ''
+runs:
+  using: node12
+  main: dist/index.js
