@@ -1,14 +1,23 @@
 import * as core from '@actions/core'
-import { sum } from './sum'
+import { WebClient } from '@slack/web-api'
+import { messageFactory } from './factory'
 
 async function run(): Promise<void> {
   try {
-    const input = core.getInput('numbers')
-    const numbers = input.split(',').map(Number)
-    const result = sum(...numbers)
+    const token = core.getInput('oauth_token')
+    const client = new WebClient(token)
+    core.info('[Info] Slack client has been initialized.')
 
-    core.info(`[Info] The result is ${result}`)
-    core.setOutput('result', result.toString())
+    const status = core.getInput('status')
+    const githubToken = core.getInput('github_token')
+    const channel = core.getInput('channel')
+
+    const message = await messageFactory({ status, githubToken, channel })
+    const { ok, error } = await client.chat.postMessage(message)
+    core.info(`[Info] Request result is ${ok}`)
+    if (error) {
+      throw new Error(error)
+    }
   } catch (error) {
     core.setFailed(error.message)
   }
