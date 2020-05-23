@@ -1,0 +1,18 @@
+{
+  "timezone": "Asia/Tokyo",
+  "extends": ["config:base", ":preserveSemverRanges"],
+  "schedule": ["schedule:monthly"],
+  "prHourlyLimit": 5,
+  "packageRules": [
+    {
+      "depTypeList": ["devDependencies"],
+      "updateTypes": ["patch", "minor"],
+      "groupName": "all devDependencies (non-major)"
+    },
+    {
+      "depTypeList": ["dependencies"],
+      "updateTypes": ["patch", "minor"],
+      "groupName": "all dependencies (non-major)"
+    }
+  ]
+}

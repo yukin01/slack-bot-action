@@ -1,0 +1,36 @@
+{
+  "name": "typescript-action-template",
+  "version": "1.0.0",
+  "description": "Typescript template action",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint **/*.ts",
+    "format": "prettier --write '**/*.(ts|js|json)'",
+    "format-check": "prettier --check '**/*.(ts|js|json)'",
+    "bundle": "ncc build",
+    "all": "yarn format-check && yarn lint && yarn build && yarn bundle && yarn test"
+  },
+  "repository": "ssh://git@github.com/yukin01/typescript-action-template",
+  "author": "yukin01 <bump1105@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@actions/core": "^1.2.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "@types/node": "^13.11.0",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
+    "@zeit/ncc": "^0.22.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-jest": "^23.8.2",
+    "jest": "^25.2.7",
+    "prettier": "^2.0.2",
+    "ts-jest": "^25.3.1",
+    "typescript": "^3.8.3"
+  }
+}
