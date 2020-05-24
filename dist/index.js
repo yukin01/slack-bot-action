@@ -4811,13 +4811,19 @@ const builder_1 = __webpack_require__(532);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const token = core.getInput('oauth_token');
+            const token = core.getInput('oauth_token', { required: true });
             const client = new web_api_1.WebClient(token);
             core.info('[Info] Slack client has been initialized.');
-            const status = core.getInput('status');
-            const githubToken = core.getInput('github_token');
-            const channel = core.getInput('channel');
-            const builder = new builder_1.MessageBuilder({ status, githubToken, channel });
+            const optional = (value) => (value === '' ? undefined : value);
+            const builder = new builder_1.MessageBuilder({
+                status: core.getInput('status', { required: true }),
+                githubToken: core.getInput('github_token', { required: true }),
+                channel: core.getInput('channel', { required: true }),
+                text: optional(core.getInput('text')),
+                username: optional(core.getInput('username')),
+                iconEmoji: optional(core.getInput('icon_emoji')),
+                iconURL: optional(core.getInput('icon_url'))
+            });
             const message = yield builder.build();
             const { ok, error } = yield client.chat.postMessage(message);
             core.info(`[Info] Request result is ${ok}`);

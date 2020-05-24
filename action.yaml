@@ -19,19 +19,19 @@ inputs:
     description: The channel to be notified of results.
     required: true
   text:
-    description: todo
+    description: Override main body text of the message.
     required: false
     default: ''
   username:
-    description: todo
+    description: Override bot's user name.
     required: false
     default: ''
   icon_emoji:
-    description: todo
+    description: Emoji to use as the icon for this message. Overrides `icon_url`.
     required: false
     default: ''
   icon_url:
-    description: todo
+    description: URL to an image to use as the icon for this message.
     required: false
     default: ''
 
