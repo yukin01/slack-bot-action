@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import { WebClient } from '@slack/web-api'
-import { messageFactory } from './factory'
+import { MessageBuilder } from './builder'
 
 async function run(): Promise<void> {
   try {
@@ -12,7 +12,9 @@ async function run(): Promise<void> {
     const githubToken = core.getInput('github_token')
     const channel = core.getInput('channel')
 
-    const message = await messageFactory({ status, githubToken, channel })
+    const builder = new MessageBuilder({ status, githubToken, channel })
+    const message = await builder.build()
+
     const { ok, error } = await client.chat.postMessage(message)
     core.info(`[Info] Request result is ${ok}`)
     if (error) {
