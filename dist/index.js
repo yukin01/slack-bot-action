@@ -4645,80 +4645,6 @@ module.exports = PQueue;
 
 /***/ }),
 
-/***/ 184:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const github_1 = __webpack_require__(469);
-const status_1 = __webpack_require__(895);
-const default_1 = __webpack_require__(594);
-const quote = (value) => '```' + value + '```';
-exports.messageFactory = ({ status: rawStatus, githubToken, channel }) => __awaiter(void 0, void 0, void 0, function* () {
-    const octokit = new github_1.GitHub(githubToken);
-    const { sha, workflow } = github_1.context;
-    const { owner, repo } = github_1.context.repo;
-    const { data } = yield octokit.repos.getCommit({ owner, repo, ref: sha });
-    const commitMessage = data.commit.message;
-    const githubRepo = `${owner}/${repo}`;
-    const githubRepoURL = `https://github.com/${owner}/${repo}`;
-    const status = status_1.getStatus(rawStatus);
-    /* eslint-disable @typescript-eslint/camelcase */
-    const attachment = {
-        color: default_1.defaultColors[status.type],
-        fields: [
-            {
-                title: 'Commit Message',
-                value: quote(commitMessage),
-                short: false
-            },
-            {
-                title: 'Repository',
-                value: `<${githubRepoURL}/tree/${sha}|${githubRepo}>`,
-                short: true
-            },
-            {
-                title: 'Workflow',
-                value: `<https://github.com/${owner}/${repo}/commit/${sha}/checks|${workflow}>`,
-                short: true
-            },
-            {
-                title: 'Status',
-                value: status.value,
-                short: true
-            },
-            {
-                title: 'Commit',
-                value: `<${githubRepoURL}/commit/${sha}|${sha.substring(0, 7)}>`,
-                short: true
-            }
-        ],
-        footer_icon: default_1.defaultFooterIcon,
-        footer: default_1.defaultFooter,
-        ts: `${Math.floor(Date.now() / 1000)}`,
-        mrkdwn_in: ['fields', 'text']
-    };
-    return {
-        channel: channel,
-        text: default_1.defaultText[status.type],
-        attachments: [attachment]
-    };
-    /* eslint-enable @typescript-eslint/camelcase */
-});
-
-
-/***/ }),
-
 /***/ 190:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -4881,17 +4807,24 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const web_api_1 = __webpack_require__(114);
-const factory_1 = __webpack_require__(184);
+const builder_1 = __webpack_require__(532);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const token = core.getInput('oauth_token');
+            const token = core.getInput('oauth_token', { required: true });
             const client = new web_api_1.WebClient(token);
             core.info('[Info] Slack client has been initialized.');
-            const status = core.getInput('status');
-            const githubToken = core.getInput('github_token');
-            const channel = core.getInput('channel');
-            const message = yield factory_1.messageFactory({ status, githubToken, channel });
+            const optional = (value) => (value === '' ? undefined : value);
+            const builder = new builder_1.MessageBuilder({
+                status: core.getInput('status', { required: true }),
+                githubToken: core.getInput('github_token', { required: true }),
+                channel: core.getInput('channel', { required: true }),
+                text: optional(core.getInput('text')),
+                username: optional(core.getInput('username')),
+                iconEmoji: optional(core.getInput('icon_emoji')),
+                iconURL: optional(core.getInput('icon_url'))
+            });
+            const message = yield builder.build();
             const { ok, error } = yield client.chat.postMessage(message);
             core.info(`[Info] Request result is ${ok}`);
             if (error) {
@@ -23576,6 +23509,108 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 });
 
 module.exports = defaults;
+
+
+/***/ }),
+
+/***/ 532:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const github_1 = __webpack_require__(469);
+const status_1 = __webpack_require__(895);
+const default_1 = __webpack_require__(594);
+class MessageBuilder {
+    constructor(option, mock) {
+        var _a;
+        this.option = option;
+        this.context = (_a = mock === null || mock === void 0 ? void 0 : mock.context) !== null && _a !== void 0 ? _a : github_1.context; // Use mock
+        this.mockCommitMessage = mock === null || mock === void 0 ? void 0 : mock.commitMessage;
+    }
+    quote(value) {
+        return '```' + value + '```';
+    }
+    fetchCommitMessage() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { option, context, mockCommitMessage } = this;
+            if (mockCommitMessage)
+                return mockCommitMessage; // Use mock
+            const { sha } = context;
+            const { owner, repo } = context.repo;
+            const octokit = new github_1.GitHub(option.githubToken);
+            const { data } = yield octokit.repos.getCommit({ owner, repo, ref: sha });
+            return data.commit.message;
+        });
+    }
+    build() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            const { option } = this;
+            const { sha, workflow } = github_1.context;
+            const { owner, repo } = github_1.context.repo;
+            const githubRepo = `${owner}/${repo}`;
+            const githubRepoURL = `https://github.com/${owner}/${repo}`;
+            const status = status_1.getStatus(option.status);
+            // Build attachment fields
+            const fields = [];
+            const commitMessage = yield this.fetchCommitMessage();
+            fields.push({
+                title: 'Commit Message',
+                value: this.quote(commitMessage),
+                short: false
+            });
+            fields.push({
+                title: 'Repository',
+                value: `<${githubRepoURL}/tree/${sha}|${githubRepo}>`,
+                short: true
+            });
+            fields.push({
+                title: 'Workflow',
+                value: `<${githubRepoURL}/commit/${sha}/checks|${workflow}>`,
+                short: true
+            });
+            fields.push({
+                title: 'Status',
+                value: status.value,
+                short: true
+            });
+            fields.push({
+                title: 'Commit',
+                value: `<${githubRepoURL}/commit/${sha}|${sha.substring(0, 7)}>`,
+                short: true
+            });
+            /* eslint-disable @typescript-eslint/camelcase */
+            const attachment = {
+                color: default_1.defaultColors[status.type],
+                fields: fields,
+                footer_icon: default_1.defaultFooterIcon,
+                footer: default_1.defaultFooter,
+                ts: `${Math.floor(Date.now() / 1000)}`,
+                mrkdwn_in: ['fields', 'text']
+            };
+            return {
+                channel: option.channel,
+                text: (_a = option.text) !== null && _a !== void 0 ? _a : default_1.defaultText[status.type],
+                attachments: [attachment],
+                username: option.username,
+                icon_emoji: option.iconEmoji,
+                icon_url: option.iconURL
+            };
+        });
+    }
+}
+exports.MessageBuilder = MessageBuilder;
 
 
 /***/ }),

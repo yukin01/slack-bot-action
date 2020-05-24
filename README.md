@@ -29,6 +29,14 @@ The following inputs are supported.
 
 - `channel` - (required) The channel to be notified of results.
 
+- `text` - (optional) Overrides main body text of the message.
+
+- `username` - (optional) Overrides bot's user name.
+
+- `icon_emoji` - (optional) Emoji to use as the icon for this message. Overrides `icon_url`.
+
+- `icon_url` - (optional) URL to an image to use as the icon for this message.
+
 For more information, see https://api.slack.com/methods/chat.postMessage.
 
 ## Output
