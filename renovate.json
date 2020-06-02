@@ -1,7 +1,6 @@
 {
   "timezone": "Asia/Tokyo",
-  "extends": ["config:base", ":preserveSemverRanges"],
-  "schedule": ["schedule:monthly"],
+  "extends": ["config:base", ":preserveSemverRanges", "schedule:monthly"],
   "prHourlyLimit": 5,
   "packageRules": [
     {
