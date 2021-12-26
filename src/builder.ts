@@ -80,22 +80,15 @@ export class MessageBuilder implements Builder<ChatPostMessageArguments> {
     })
     fields.push({
       title: 'Repository',
-      value: `<${githubRepoURL}/tree/${sha}|${githubRepo}>`,
+      value: [
+        `<${githubRepoURL}|${githubRepo}>`,
+        `(<${githubRepoURL}/commit/${sha}|${sha.substring(0, 7)}>)`,
+      ].join(' '),
       short: true,
     })
     fields.push({
       title: 'Workflow',
       value: `<${githubRepoURL}/commit/${sha}/checks|${workflow}>`,
-      short: true,
-    })
-    fields.push({
-      title: 'Status',
-      value: status.value,
-      short: true,
-    })
-    fields.push({
-      title: 'Commit',
-      value: `<${githubRepoURL}/commit/${sha}|${sha.substring(0, 7)}>`,
       short: true,
     })
 
