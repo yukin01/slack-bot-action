@@ -18,4 +18,7 @@ export type Status = {
   value: string
 }
 
-export const getStatus = (value: string): Status => ({ type: getStatusType(value), value })
+export const getStatus = (value: string): Status => ({
+  type: getStatusType(value),
+  value,
+})

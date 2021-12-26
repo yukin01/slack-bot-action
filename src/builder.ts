@@ -1,8 +1,14 @@
 import { ChatPostMessageArguments, MessageAttachment } from '@slack/web-api'
-import { GitHub, context } from '@actions/github'
-import { Context } from '@actions/github/lib/context'
+import { getOctokit, context } from '@actions/github'
 import { getStatus } from './status'
-import { defaultColors, defaultText, defaultFooter, defaultFooterIcon } from './default'
+import {
+  defaultColors,
+  defaultText,
+  defaultFooter,
+  defaultFooterIcon,
+} from './default'
+
+type Context = typeof context
 
 type Builder<T> = {
   build: () => Promise<T>
@@ -26,7 +32,11 @@ export type MessageBuilderMockOption = {
 export class MessageBuilder implements Builder<ChatPostMessageArguments> {
   private context: Context
   private mockCommitMessage?: string
-  constructor(private option: MessageBuilderOption, mock?: MessageBuilderMockOption) {
+  constructor(
+    private option: MessageBuilderOption,
+    mock?: MessageBuilderMockOption
+  ) {
+    this.option = option
     this.context = mock?.context ?? context // Use mock
     this.mockCommitMessage = mock?.commitMessage
   }
@@ -41,8 +51,12 @@ export class MessageBuilder implements Builder<ChatPostMessageArguments> {
 
     const { sha } = context
     const { owner, repo } = context.repo
-    const octokit = new GitHub(option.githubToken)
-    const { data } = await octokit.repos.getCommit({ owner, repo, ref: sha })
+    const octokit = getOctokit(option.githubToken)
+    const { data } = await octokit.rest.repos.getCommit({
+      owner,
+      repo,
+      ref: sha,
+    })
     return data.commit.message
   }
 
@@ -62,37 +76,36 @@ export class MessageBuilder implements Builder<ChatPostMessageArguments> {
     fields.push({
       title: 'Commit Message',
       value: this.quote(commitMessage),
-      short: false
+      short: false,
     })
     fields.push({
       title: 'Repository',
       value: `<${githubRepoURL}/tree/${sha}|${githubRepo}>`,
-      short: true
+      short: true,
     })
     fields.push({
       title: 'Workflow',
       value: `<${githubRepoURL}/commit/${sha}/checks|${workflow}>`,
-      short: true
+      short: true,
     })
     fields.push({
       title: 'Status',
       value: status.value,
-      short: true
+      short: true,
     })
     fields.push({
       title: 'Commit',
       value: `<${githubRepoURL}/commit/${sha}|${sha.substring(0, 7)}>`,
-      short: true
+      short: true,
     })
 
-    /* eslint-disable @typescript-eslint/camelcase */
     const attachment: MessageAttachment = {
       color: defaultColors[status.type],
       fields: fields,
       footer_icon: defaultFooterIcon,
       footer: defaultFooter,
       ts: `${Math.floor(Date.now() / 1000)}`,
-      mrkdwn_in: ['fields', 'text']
+      mrkdwn_in: ['fields', 'text'],
     }
 
     return {
@@ -101,8 +114,7 @@ export class MessageBuilder implements Builder<ChatPostMessageArguments> {
       attachments: [attachment],
       username: option.username,
       icon_emoji: option.iconEmoji,
-      icon_url: option.iconURL
+      icon_url: option.iconURL,
     }
-    /* eslint-enable @typescript-eslint/camelcase */
   }
 }
