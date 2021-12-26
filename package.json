@@ -1,19 +1,19 @@
 {
-  "name": "typescript-action-template",
+  "name": "slack-bot-action",
   "version": "1.0.0",
-  "description": "Typescript template action",
+  "description": "An action to notify Slack using the chat.postMessage API",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "lint": "eslint **/*.ts",
+    "lint": "eslint . --ext .ts",
     "format": "prettier --write '**/*.(ts|js|json)'",
     "format-check": "prettier --check '**/*.(ts|js|json)'",
     "bundle": "ncc build",
     "all": "yarn format-check && yarn lint && yarn build && yarn bundle && yarn test"
   },
   "repository": "ssh://git@github.com/yukin01/typescript-action-template",
-  "author": "yukin01 <bump1105@gmail.com>",
+  "author": "yukin01 <38382781+yukin01@users.noreply.github.com>",
   "license": "MIT",
   "private": true,
   "dependencies": {
