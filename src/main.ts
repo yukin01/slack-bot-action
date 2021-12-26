@@ -8,7 +8,8 @@ async function run(): Promise<void> {
     const client = new WebClient(token)
     core.info('[Info] Slack client has been initialized.')
 
-    const optional = <T extends string>(value: T) => (value === '' ? undefined : value)
+    const optional = <T extends string>(value: T) =>
+      value === '' ? undefined : value
 
     const builder = new MessageBuilder({
       status: core.getInput('status', { required: true }),
@@ -17,7 +18,7 @@ async function run(): Promise<void> {
       text: optional(core.getInput('text')),
       username: optional(core.getInput('username')),
       iconEmoji: optional(core.getInput('icon_emoji')),
-      iconURL: optional(core.getInput('icon_url'))
+      iconURL: optional(core.getInput('icon_url')),
     })
     const message = await builder.build()
 
@@ -27,7 +28,9 @@ async function run(): Promise<void> {
       throw new Error(error)
     }
   } catch (error) {
-    core.setFailed(error.message)
+    if (error instanceof Error) {
+      core.setFailed(error.message)
+    }
   }
 }
 
