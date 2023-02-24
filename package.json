@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "An action to notify Slack using the chat.postMessage API",
   "main": "lib/main.js",
+	"engines": {
+		"node": ">=16"
+	},
   "scripts": {
     "build": "tsc",
     "test": "jest",
